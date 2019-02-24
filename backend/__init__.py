@@ -10,6 +10,7 @@ app = Flask(__name__, instance_relative_config=True)
 socketio = SocketIO(app)
 
 def changeCarCount(lot):
+    print("Change car count in lot: " + str(lot))
     socketio.emit('carCountChanged', {
         'data': {
             'lot': lot,
@@ -56,4 +57,4 @@ def onConnect():
 
 
 print("Starting server, listening on localhost:5000")
-socketio.run(app, host='localhost', port=5000)
+socketio.run(app, host='0.0.0.0', port=5000)

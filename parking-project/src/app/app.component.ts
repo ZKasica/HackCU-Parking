@@ -24,7 +24,8 @@ export class AppComponent {
     var mapProp = {
       center: new google.maps.LatLng(39.7510, -105.2226),
       zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true,
     };
     this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
 
@@ -34,7 +35,9 @@ export class AppComponent {
 
     this.createParkingZones();
 
-    this.carSocket = io.connect('http://localhost:5000/cars');
+    // Doesn't work on android because localhost...
+    // TODO: Change to your computer IP...
+    this.carSocket = io.connect('http://10.203.155.149:5000/cars');
     this.carSocket.on('connect', () => {
       console.log("Connected to cars socket");
     });
@@ -50,6 +53,10 @@ export class AppComponent {
         this.displayLotInfo(this.selectedLot);
       }
     });
+
+    $(window).on('beforeunload', () => {
+      this.carSocket.close();
+    });
   } 
 
   selectLot(parkingZone) {
@@ -60,7 +67,7 @@ export class AppComponent {
     this.map.setZoom(16);
 
     $('#info-panel').removeClass('slideDown');
-    $('#info-panel').addClass('slideUp', 500, 'easeIn');
+    $('#info-panel').addClass('slideUp', 500, 'easeOutCirc');
   }
 
   displayLotInfo(parkingZone) {

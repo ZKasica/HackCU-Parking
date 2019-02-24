@@ -39,7 +39,10 @@ class detector:
     
     def update_car_status(self):
         diff = self.get_frame_movement()
-        _, cnts, _ = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if cv2.__version__ == "4.0.0":
+            cnts, _ = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        else:
+            _, cnts, _ = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         moved = False
         cx = 0

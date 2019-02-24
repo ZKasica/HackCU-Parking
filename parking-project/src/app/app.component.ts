@@ -40,9 +40,6 @@ export class AppComponent {
     this.createGeolocation();
     this.createUI();
     this.populateList();
-    this.parkingZones.forEach((parkingZone, key, map) => {
-      this.updateListUI(parkingZone);
-    });
 
     // Doesn't work on android because localhost...
     // TODO: Change to your computer IP...
@@ -63,6 +60,10 @@ export class AppComponent {
 
     $(window).on('beforeunload', () => {
       this.carSocket.close();
+    });
+
+    this.parkingZones.forEach((parkingZone, key, map) => {
+      this.updateListUI(parkingZone);
     });
   } 
 
@@ -86,6 +87,7 @@ export class AppComponent {
   updateListUI(parkingZone) {
     var listElement = $("li[lotName='" + parkingZone.getName() + "']");
     listElement.find(".listSpotsOpen").html(parkingZone.getSpotsLeft() + " Spots Open");
+    listElement.find(".listStatus").attr('src', parkingZone.getIconSrc());
   }
 
   createParkingZones() {
@@ -166,7 +168,6 @@ export class AppComponent {
   }
 
   populateList() {
-    // $("#parkingLotsList").empty();
     this.parkingZones.forEach((parkingZone, key, map) => {
       $("#parkingLotsList").append(
         "<li class='parkingLotListElement' lotName='" + parkingZone.getName() +"'>"+
@@ -174,7 +175,7 @@ export class AppComponent {
               "<h1 class='listName'>" + parkingZone.getName() + "</h1>" +
               "<p class='listSpotsOpen'>" + parkingZone.getCurrentCapacity() + " Spots Open</p>" +
             "</span>" +
-          "<img class='listStatus' src='assets/img/checked.png'>" +
+          "<img class='listStatus' src='" + parkingZone.getIconSrc() + "'>" +
         "</li>"
       );
     });

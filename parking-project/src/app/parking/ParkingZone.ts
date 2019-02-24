@@ -117,4 +117,20 @@ export class ParkingZone {
     public getStatus() {
         return this.status;
     }
+
+    public getIconSrc() {
+        switch(this.status) {
+            case ParkingZone.LOW:
+                return "assets/img/checked.png"
+
+            case ParkingZone.MEDIUM:
+                return "assets/img/warning.png"
+
+            case ParkingZone.HIGH:
+                return "assets/img/high-warning.png"
+
+            case ParkingZone.FULL:
+                return "assets/img/full.png"
+        }
+    }
 }

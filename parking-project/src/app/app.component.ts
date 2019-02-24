@@ -1,7 +1,7 @@
 /// <reference types="@types/googlemaps" />
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ParkingZone } from "./parking/ParkingZone";
-import * as $ from 'jquery';
+declare let $: any;
 
 declare var io: any;
 import "../../socketio.min.js";
@@ -58,6 +58,9 @@ export class AppComponent {
 
     this.map.panTo(this.selectedLot.getCenter());
     this.map.setZoom(16);
+
+    $('#info-panel').removeClass('slideDown');
+    $('#info-panel').addClass('slideUp', 500, 'easeIn');
   }
 
   displayLotInfo(parkingZone) {

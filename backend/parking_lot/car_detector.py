@@ -39,7 +39,10 @@ class detector:
     
     def update_car_status(self):
         diff = self.get_frame_movement()
-        _, cnts, _ = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if cv2.__version__ == '4.0.0':
+            cnts, _ = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        else:
+            _, cnts, _ = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         moved = False
         cx = 0
@@ -77,18 +80,18 @@ class detector:
                     self.car_frames = []
                 else:
                     if avg_movement > 0:
-                        #r = requests.get(self.req_entered)
+                        r = requests.get(self.req_entered)
                         plate_reader.read_plate(self.car_frames)     
                         print("Car entered!")
                     else:
-                        #r = requests.get(self.req_exited)
+                        r = requests.get(self.req_exited)
                         print("Car exited")
 
                     #print(r.status_code)
 
 
 if __name__ == '__main__':
-    d = detector()
+    d = detector("Lot D")
     d.listen_for_cars()
 
 

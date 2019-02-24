@@ -1,2 +1,2 @@
 cd parking-project
-ng serve --open
+ng serve --open --disable-host-check

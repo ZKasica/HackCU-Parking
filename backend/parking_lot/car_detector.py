@@ -39,7 +39,11 @@ class detector:
     
     def update_car_status(self):
         diff = self.get_frame_movement()
+<<<<<<< HEAD
         if cv2.__version__ == '4.0.0':
+=======
+        if cv2.__version__ == "4.0.0":
+>>>>>>> c075eb49adc1d99e78cdf45efee289d2ad843d5d
             cnts, _ = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         else:
             _, cnts, _ = cv2.findContours(diff, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)

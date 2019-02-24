@@ -14,7 +14,8 @@
     background-color: white;
     box-shadow: 0px -4px 9px gray;
     border-radius: 15px 15px 0px 0px;
-    font-family: 'Open Sans', sans-serif;
+    /* font-family: 'Open Sans', sans-serif; */
+    font-family: 'Lato', sans-serif;
 }
 
 #info-panel #lotName {
@@ -125,7 +126,9 @@
     background-color: white;
     box-shadow: 0px -4px 9px gray;
     border-radius: 15px 15px 0px 0px;
-    font-family: 'Open Sans', sans-serif;
+    /* font-family: 'Open Sans', sans-serif; */
+
+    font-family: 'Lato', sans-serif;
     overflow: scroll;
 }
 
@@ -144,4 +147,11 @@
 .hideList {
     /* display: none; */
     bottom: -480px;
+}
+
+#canvasDiv {
+    margin-top: 15px;
+    position: absolute;
+    left: 5%;
+    width: 90%;
 }

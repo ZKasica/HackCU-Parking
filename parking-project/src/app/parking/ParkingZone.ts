@@ -39,17 +39,17 @@ export class ParkingZone {
 
     }
 
-    onCarEntered() {
+    public onCarEntered() {
         this.currentCapacity++;
         this.updateStatus();
     }
 
-    onCarExited() {
+    public onCarExited() {
         this.maxCapacity--;
         this.updateStatus();
     }
 
-    updateStatus() {
+    private updateStatus() {
         var ratio = this.currentCapacity / this.maxCapacity;
 
         // TODO: Unhardcode
@@ -68,5 +68,13 @@ export class ParkingZone {
             strokeColor: this.status,
             fillColor: this.status
         });
+    }
+
+    public getCurrentCapacity() {
+        return this.currentCapacity;
+    }
+
+    public getMaximumCapacity() {
+        return this.maxCapacity;
     }
 }

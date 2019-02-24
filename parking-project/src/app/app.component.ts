@@ -15,6 +15,7 @@ export class AppComponent {
   public map: google.maps.Map;
 
   private parkingZones: Map<string, ParkingZone>
+  private carSocket;
 
   ngOnInit() {
     var mapProp = {
@@ -30,13 +31,31 @@ export class AppComponent {
 
     this.createParkingZones();
 
-    var socket = io.connect('http://localhost:5000/test');
-    socket.on('connect', function() {
-      socket.emit("message", {data: "Connected from typescript"});
+    this.carSocket = io.connect('http://localhost:5000/cars');
+    this.carSocket.on('connect', () => {
+      console.log("Connected to cars socket");
+    });
+
+    this.carSocket.on('carEntered', (event) => {
+      this.parkingZones[event.data.lot].onCarEntered();
+      console.log("Car entered " + event.data + " "
+                 + this.parkingZones[event.data.lot].getCurrentCapacity() 
+                 + " / " 
+                 + this.parkingZones[event.data.lot].getMaximumCapacity());
+    });
+
+    this.carSocket.on('carExited', (event) => {
+      this.parkingZones[event.data.lot].onCarEntered();
+      console.log("Car exited " + event.data + " "
+                 + this.parkingZones[event.data.lot].getCurrentCapacity() 
+                 + " / " 
+                 + this.parkingZones[event.data.lot].getMaximumCapacity());
     });
   } 
 
   createParkingZones() {
+    this.parkingZones = new Map<string, ParkingZone>();
+
     this.parkingZones["Lot D"] = new ParkingZone(this.map, "Lot D", 10, [
       {lat: 39.74862680238093, lng: -105.22318225421515},
       {lat: 39.74827209694497, lng: -105.22394668378439},

@@ -12,6 +12,7 @@ export class ParkingZone {
 
     private currentCapacity: number;
     private maxCapacity: number;
+    private percentFull: number;
     private status: string;
 
     constructor(map: google.maps.Map, name: string, maxCapacity: number, coords) {
@@ -34,9 +35,8 @@ export class ParkingZone {
         });
 
         this.currentCapacity = 0;
-        this.maxCapacity = maxCapacity
-
-
+        this.maxCapacity = maxCapacity;
+        this.percentFull = 0;
     }
 
     public onCarCountChanged(newCarCount) {
@@ -56,6 +56,8 @@ export class ParkingZone {
 
     private updateStatus() {
         var ratio = this.currentCapacity / this.maxCapacity;
+        this.percentFull = ratio * 100;
+
 
         // TODO: Unhardcode
         // Add another status: Full? that should be red or black?

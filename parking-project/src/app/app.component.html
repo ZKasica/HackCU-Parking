@@ -1,4 +1,28 @@
 
-<div #gmap style="width:100%;height:600px;"></div>
+<div id="wrapper">
+    <div #gmap style="width:100%;height:100%;"></div>
+    
+    <div id="info-panel">
+        <h2 id="lotName">D Lot</h2>
+    
+        <div id="spotsRemainingDiv">
+            <!-- Image here -->
+            <img id="spotsRemainingIcon" src="assets/img/carIcon.png">
+            <span id="spotsRemaining">23 Parking Spots Remaining</span>
+        </div>
+        
+        <div id="percentFullDiv">
+            <!-- Image here -->
+            <img id="percentFullIcon" src="assets/img/percentIcon.png">
+            <span id="percentFull">60% Full</span>
+        </div>
+    
+        <div id="moreInfoButton">
+            <p id="moreInfoButtonText">
+                More Information
+            </p>
+        </div>
+    </div>
+</div>
 
 <router-outlet></router-outlet>

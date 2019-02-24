@@ -39,6 +39,11 @@ export class ParkingZone {
 
     }
 
+    public onCarCountChanged(newCarCount) {
+        this.currentCapacity = newCarCount;
+        this.updateStatus();
+    }
+
     public onCarEntered() {
         this.currentCapacity++;
         this.updateStatus();

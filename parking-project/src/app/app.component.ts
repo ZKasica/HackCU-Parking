@@ -36,17 +36,9 @@ export class AppComponent {
       console.log("Connected to cars socket");
     });
 
-    this.carSocket.on('carEntered', (event) => {
-      this.parkingZones[event.data.lot].onCarEntered();
-      console.log("Car entered " + event.data + " "
-                 + this.parkingZones[event.data.lot].getCurrentCapacity() 
-                 + " / " 
-                 + this.parkingZones[event.data.lot].getMaximumCapacity());
-    });
-
-    this.carSocket.on('carExited', (event) => {
-      this.parkingZones[event.data.lot].onCarEntered();
-      console.log("Car exited " + event.data + " "
+    this.carSocket.on('carCountChanged', (event) => {
+      this.parkingZones[event.data.lot].onCarCountChanged(event.data.count);
+       console.log("Car count changed " + event.data + " "
                  + this.parkingZones[event.data.lot].getCurrentCapacity() 
                  + " / " 
                  + this.parkingZones[event.data.lot].getMaximumCapacity());

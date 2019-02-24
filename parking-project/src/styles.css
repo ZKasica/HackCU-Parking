@@ -5,3 +5,39 @@ html, body {
     padding: 0;
     overflow: hidden;
 }
+
+
+.parkingLotListElement {
+    width: 100%;
+    float: left;
+    height: 5%;
+    border-bottom: solid gray 1px;
+}
+
+.parkingLotListElement .listName {
+    position: relative;
+    left: 30px;
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+
+.parkingLotListElement .listSpotsOpen {
+    position: relative;
+    left: 38px;
+    font-size: 17px;
+    margin-top: 0px;
+}
+
+.parkingLotListElement span {
+    float: left;
+}
+
+.parkingLotListElement .listStatus {
+    position: relative;
+    height: 64px;
+    width: 64px;
+    float: right;
+    vertical-align:middle;
+    padding-top: 20px;
+    padding-right: 35px;
+}

@@ -113,4 +113,8 @@ export class ParkingZone {
     public getCenter() {
         return this.center;
     }
+
+    public getStatus() {
+        return this.status;
+    }
 }

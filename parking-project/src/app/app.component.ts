@@ -20,6 +20,8 @@ export class AppComponent {
   private carSocket;
   private selectedLot: ParkingZone;
 
+  private isShowingParkingList = false;
+
   ngOnInit() {
     var mapProp = {
       center: new google.maps.LatLng(39.7510, -105.2226),
@@ -35,6 +37,13 @@ export class AppComponent {
 
     this.createParkingZones();
 
+    this.createGeolocation();
+    this.createUI();
+    this.populateList();
+    this.parkingZones.forEach((parkingZone, key, map) => {
+      this.updateListUI(parkingZone);
+    });
+
     // Doesn't work on android because localhost...
     // TODO: Change to your computer IP...
     this.carSocket = io.connect('http://10.203.155.149:5000/cars');
@@ -43,15 +52,13 @@ export class AppComponent {
     });
 
     this.carSocket.on('carCountChanged', (event) => {
-      this.parkingZones[event.data.lot].onCarCountChanged(event.data.count);
-      console.log("Car count changed " + event.data + " "
-                 + this.parkingZones[event.data.lot].getCurrentCapacity() 
-                 + " / " 
-                 + this.parkingZones[event.data.lot].getMaximumCapacity());
+      this.parkingZones.get(event.data.lot).onCarCountChanged(event.data.count);
 
       if(this.selectedLot != null) {
         this.displayLotInfo(this.selectedLot);
       }
+
+      this.updateListUI(this.parkingZones.get(event.data.lot));
     });
 
     $(window).on('beforeunload', () => {
@@ -76,20 +83,25 @@ export class AppComponent {
     $("#percentFull").html(parkingZone.getPercentFull().toFixed() + "% Full");
   }
 
+  updateListUI(parkingZone) {
+    var listElement = $("li[lotName='" + parkingZone.getName() + "']");
+    listElement.find(".listSpotsOpen").html(parkingZone.getSpotsLeft() + " Spots Open");
+  }
+
   createParkingZones() {
     this.parkingZones = new Map<string, ParkingZone>();
 
-    this.parkingZones["Lot D"] = new ParkingZone(this.map, "Lot D", 10, [
+    this.parkingZones.set("Lot D", new ParkingZone(this.map, "Lot D", 10, [
       {lat: 39.74862680238093, lng: -105.22318225421515},
       {lat: 39.74827209694497, lng: -105.22394668378439},
       {lat: 39.748775283184, lng: -105.22432219304648},
       {lat: 39.74898356821566, lng: -105.22391986169424}
-    ]);
-    this.parkingZones["Lot D"].addClickListener((event) => {
-      this.selectLot(this.parkingZones["Lot D"]);
+    ]));
+    this.parkingZones.get("Lot D").addClickListener((event) => {
+      this.selectLot(this.parkingZones.get("Lot D"));
     });
     
-    this.parkingZones["Lot Q"] = new ParkingZone(this.map, "Lot Q", 120, [
+    this.parkingZones.set("Lot Q",  new ParkingZone(this.map, "Lot Q", 120, [
       {lat: 39.75027459728276, lng: -105.22575904541935},
       {lat: 39.750014761322326, lng: -105.22640814000096}, 
       {lat: 39.75059217323679, lng: -105.22707332783665}, 
@@ -97,21 +109,93 @@ export class AppComponent {
       {lat: 39.75079839060481, lng: -105.22789944821324}, 
       {lat: 39.751190201903334, lng: -105.22742201500859},
       {lat: 39.75106647226035, lng: -105.2267943780991}
-    ]);
-    this.parkingZones["Lot Q"].addClickListener((event) => {
-      this.selectLot(this.parkingZones["Lot Q"]);
+    ]));
+    this.parkingZones.get("Lot Q").addClickListener((event) => {
+      this.selectLot(this.parkingZones.get("Lot Q"));
     });
 
-    this.parkingZones["CTLM"] = new ParkingZone(this.map, "CTLM", 160, [
+    this.parkingZones.set("CTLM", new ParkingZone(this.map, "CTLM", 160, [
       {lat: 39.7501214009411, lng: -105.21948697794733},
       {lat: 39.75074417976547, lng: -105.21824779738245}, 
       {lat: 39.750331744087596, lng: -105.21784546603021}, 
       {lat: 39.750405982691824, lng: -105.21768453348932}, 
       {lat: 39.7502410079071, lng: -105.2175021432763}, 
       {lat: 39.74950686532418, lng: -105.21893980730829}
-    ]);
-    this.parkingZones["CTLM"].addClickListener((event) => {
-      this.selectLot(this.parkingZones["CTLM"]);
+    ]));
+    this.parkingZones.get("CTLM").addClickListener((event) => {
+      this.selectLot(this.parkingZones.get("CTLM"));
     });
+  }
+
+  createUI() {
+    $("#closeIconDiv").click(() => {
+      $('#info-panel').removeClass('slideUp');
+      $('#info-panel').addClass('slideDown', 500, 'easeOutCirc');
+      this.selectedLot = null;
+    });
+
+    $("#parkingIcon").click(() => {
+      if(this.selectedLot != null) {
+        this.selectedLot = null;
+        $('#info-panel').removeClass('slideUp');
+        $('#info-panel').addClass('slideDown', 500, 'easeOutCirc');
+      }
+
+      if(this.isShowingParkingList) {
+        this.isShowingParkingList = false;
+        $('#parkingLotsListDiv').removeClass('showList');
+        $('#parkingLotsListDiv').addClass('hideList', 500, 'easeOutCirc');
+      } else {
+        this.isShowingParkingList = true;
+        $('#parkingLotsListDiv').removeClass('hideList');
+        $('#parkingLotsListDiv').addClass('showList', 500, 'easeOutCirc');
+      }
+    });
+  }
+
+  registerLotListEvents() {
+    $(".parkingLotListElement").click((e) => {
+      var lotName = $(e.currentTarget).attr('lotName');
+      
+      this.isShowingParkingList = false;
+      $('#parkingLotsListDiv').removeClass('showList');
+      $('#parkingLotsListDiv').addClass('hideList', 500, 'easeOutCirc');
+
+      this.selectLot(this.parkingZones.get(lotName));
+    });
+  }
+
+  populateList() {
+    // $("#parkingLotsList").empty();
+    this.parkingZones.forEach((parkingZone, key, map) => {
+      $("#parkingLotsList").append(
+        "<li class='parkingLotListElement' lotName='" + parkingZone.getName() +"'>"+
+            "<span>" +
+              "<h1 class='listName'>" + parkingZone.getName() + "</h1>" +
+              "<p class='listSpotsOpen'>" + parkingZone.getCurrentCapacity() + " Spots Open</p>" +
+            "</span>" +
+          "<img class='listStatus' src='assets/img/checked.png'>" +
+        "</li>"
+      );
+    });
+    this.registerLotListEvents();
+  }
+
+  createGeolocation() {
+    // if(navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(function(position) {
+    //     var pos = {
+    //       lat: position.coords.latitude,
+    //       lng: position.coords.longitude
+    //     };
+
+    //     var infoWindow = new google.maps.InfoWindow();
+    //     infoWindow.setPosition(pos);
+    //     infoWindow.setContent('Location found.');
+    //     infoWindow.open(this.map);
+
+    //     alert(pos);
+    //   });
+    // } 
   }
 }

@@ -20,8 +20,8 @@ class detector:
         self.detector_active = True
         self.car_x = []
         self.car_frames = []
-        req_entered = "http://localhost:5000/carEntered?lot=" + self.lot
-        req_exited = "http://localhost:5000/carExited?lot=" + self.lot
+        self.req_entered = "http://localhost:5000/carEntered?lot=" + self.lot
+        self.req_exited = "http://localhost:5000/carExited?lot=" + self.lot
 
     def get_frame_movement(self):
         _, self.current_frame = self.cap.read()
@@ -77,12 +77,12 @@ class detector:
                     self.car_frames = []
                 else:
                     if avg_movement > 0:
-                        r = requests.get(req_entered)
+                        #r = requests.get(self.req_entered)
                         plate_reader.read_plate(self.car_frames)     
-                        #print("Car entered!")
+                        print("Car entered!")
                     else:
-                        r = requests.get(req_exited)
-                        #print("Car exited")
+                        #r = requests.get(self.req_exited)
+                        print("Car exited")
 
                     #print(r.status_code)
 

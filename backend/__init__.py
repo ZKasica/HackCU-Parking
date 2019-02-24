@@ -10,7 +10,6 @@ app = Flask(__name__, instance_relative_config=True)
 socketio = SocketIO(app)
 
 def changeCarCount(lot):
-    print("Change car count in lot: " + str(lot))
     socketio.emit('carCountChanged', {
         'data': {
             'lot': lot,

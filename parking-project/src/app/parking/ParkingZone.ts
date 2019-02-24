@@ -121,16 +121,16 @@ export class ParkingZone {
     public getIconSrc() {
         switch(this.status) {
             case ParkingZone.LOW:
-                return "assets/img/checked.png"
+                return "assets/img/greenCheck.png"
 
             case ParkingZone.MEDIUM:
-                return "assets/img/warning.png"
+                return "assets/img/yellowCaution.png"
 
             case ParkingZone.HIGH:
-                return "assets/img/high-warning.png"
+                return "assets/img/redCaution.png"
 
             case ParkingZone.FULL:
-                return "assets/img/full.png"
+                return "assets/img/blackX.png"
         }
     }
 }

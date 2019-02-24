@@ -86,10 +86,16 @@ export class ParkingZone {
     }
 
     public getPercentFull() {
-        return this.percentFull;
+        return this.percentFull <= 100 ? this.percentFull : 100;
     }
 
     public addClickListener(eventCallback) {
         google.maps.event.addListener(this.mapShape, "click", eventCallback);
+    }
+
+    public getSpotsLeft() {
+        var left = this.maxCapacity - this.currentCapacity;
+
+        return left >= 0 ? left : 0;
     }
 }

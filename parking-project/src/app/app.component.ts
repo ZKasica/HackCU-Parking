@@ -51,10 +51,15 @@ export class AppComponent {
     });
   } 
 
+  selectLot(parkingZone) {
+    this.selectedLot = parkingZone;
+    this.displayLotInfo(this.selectedLot);
+  }
+
   displayLotInfo(parkingZone) {
     $("#lotName").html(parkingZone.getName());
-    $("#spotsRemaining").html((parkingZone.getMaximumCapacity() - parkingZone.getCurrentCapacity()) + " Parking Spots Remaining");
-    $("#percentFull").html(parkingZone.getPercentFull() + "% Full");
+    $("#spotsRemaining").html(parkingZone.getSpotsLeft() + " Parking Spots Remaining");
+    $("#percentFull").html(parkingZone.getPercentFull().toFixed() + "% Full");
   }
 
   createParkingZones() {
@@ -67,8 +72,7 @@ export class AppComponent {
       {lat: 39.74898356821566, lng: -105.22391986169424}
     ]);
     this.parkingZones["Lot D"].addClickListener((event) => {
-      this.selectedLot = this.parkingZones["Lot D"];
-      this.displayLotInfo(this.selectedLot);
+      this.selectLot(this.parkingZones["Lot D"]);
     });
     
     this.parkingZones["Lot Q"] = new ParkingZone(this.map, "Lot Q", 120, [
@@ -81,8 +85,7 @@ export class AppComponent {
       {lat: 39.75106647226035, lng: -105.2267943780991}
     ]);
     this.parkingZones["Lot Q"].addClickListener((event) => {
-      this.selectedLot = this.parkingZones["Lot Q"];
-      this.displayLotInfo(this.selectedLot);
+      this.selectLot(this.parkingZones["Lot Q"]);
     });
 
     this.parkingZones["CTLM"] = new ParkingZone(this.map, "CTLM", 160, [
@@ -94,8 +97,7 @@ export class AppComponent {
       {lat: 39.74950686532418, lng: -105.21893980730829}
     ]);
     this.parkingZones["CTLM"].addClickListener((event) => {
-      this.selectedLot = this.parkingZones["CTLM"];
-      this.displayLotInfo(this.selectedLot);
+      this.selectLot(this.parkingZones["CTLM"]);
     });
   }
 }

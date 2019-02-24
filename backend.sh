@@ -1,3 +1,1 @@
-export FLASK_APP=backend
-export FLASK_ENV=development
-flask run
+python3 backend/__init__.py 

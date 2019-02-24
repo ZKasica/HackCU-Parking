@@ -275,8 +275,12 @@ export class AppComponent {
       var lotName = $(e.currentTarget).attr('lotName');
       
       this.isShowingParkingList = false;
-      $('#parkingLotsListDiv').removeClass('showList');
-      $('#parkingLotsListDiv').addClass('hideList', 400);
+
+      $('#parkingLotsListDiv').animate({
+        bottom: "-480px"
+      }, 300, () => {
+        $('#parkingLotsListDiv').removeClass('showList');
+      });
 
       this.selectLot(this.parkingZones.get(lotName));
     });

@@ -287,6 +287,10 @@ export class AppComponent {
       }
     
     });
+
+    $("#directionsButton").click(() => {
+      window.location.href="https://www.google.com/maps/dir/?api=1&destination=" + this.selectedLot.getCenter().lat() + "," + this.selectedLot.getCenter().lng();
+    });
   }
 
   registerLotListEvents() {

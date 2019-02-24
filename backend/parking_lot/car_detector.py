@@ -5,6 +5,7 @@ from threading import Thread
 import logging
 import time
 import requests
+import plate_reader
 
 class detector:
     def __init__(self, lot="Not Assigned!"): 
@@ -18,7 +19,9 @@ class detector:
         self.frames_since_movement = self.movement_thresh
         self.detector_active = True
         self.car_x = []
+        self.car_frames = []
         req_entered = "http://localhost:5000/carEntered?lot=" + self.lot
+        req_exited = "http://localhost:5000/carExited?lot=" + self.lot
 
     def get_frame_movement(self):
         _, self.current_frame = self.cap.read()
@@ -51,6 +54,7 @@ class detector:
             self.frames_since_movement = 0
             self.current_car = True
             self.car_x.append(cx)
+            self.car_frames.append(self.current_frame)
         elif self.frames_since_movement > self.movement_thresh:
             self.frames_since_movement = self.movement_thresh
             self.current_car = False
@@ -70,10 +74,17 @@ class detector:
             if last_state != current_state:
                 if current_state:
                     self.car_x = []
-                    print("Car entered!!")
+                    self.car_frames = []
                 else:
-                    print("Car left...")
-                    print(avg_movement)
+                    if avg_movement > 0:
+                        r = requests.get(req_entered)
+                        plate_reader.read_plate(self.car_frames)     
+                        #print("Car entered!")
+                    else:
+                        r = requests.get(req_exited)
+                        #print("Car exited")
+
+                    #print(r.status_code)
 
 
 if __name__ == '__main__':

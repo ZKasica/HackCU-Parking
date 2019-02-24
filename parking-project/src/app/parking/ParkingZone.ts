@@ -30,10 +30,6 @@ export class ParkingZone {
         });
         this.mapShape.setMap(map);
 
-        google.maps.event.addListener(this.mapShape, "click", (event) => {
-            console.log(this.currentCapacity + " / " + this.maxCapacity);
-        });
-
         this.currentCapacity = 0;
         this.maxCapacity = maxCapacity;
         this.percentFull = 0;
@@ -77,11 +73,23 @@ export class ParkingZone {
         });
     }
 
+    public getName() {
+        return this.name;
+    }
+
     public getCurrentCapacity() {
         return this.currentCapacity;
     }
 
     public getMaximumCapacity() {
         return this.maxCapacity;
+    }
+
+    public getPercentFull() {
+        return this.percentFull;
+    }
+
+    public addClickListener(eventCallback) {
+        google.maps.event.addListener(this.mapShape, "click", eventCallback);
     }
 }

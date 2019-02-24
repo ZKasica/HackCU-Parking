@@ -9,6 +9,7 @@ export class ParkingZone {
     private name: string;
     
     private mapShape: google.maps.Polygon;
+    private center: google.maps.LatLng;
 
     private currentCapacity: number;
     private maxCapacity: number;
@@ -33,6 +34,16 @@ export class ParkingZone {
         this.currentCapacity = 0;
         this.maxCapacity = maxCapacity;
         this.percentFull = 0;
+
+
+        var lat = 0;
+        var lng = 0;
+
+        for(let pos of coords) {
+            lat += pos.lat;
+            lng += pos.lng;
+        }
+        this.center = new google.maps.LatLng(lat / coords.length, lng / coords.length);
     }
 
     public onCarCountChanged(newCarCount) {
@@ -97,5 +108,9 @@ export class ParkingZone {
         var left = this.maxCapacity - this.currentCapacity;
 
         return left >= 0 ? left : 0;
+    }
+
+    public getCenter() {
+        return this.center;
     }
 }

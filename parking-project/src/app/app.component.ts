@@ -5,6 +5,7 @@ import * as $ from 'jquery';
 
 declare var io: any;
 import "../../socketio.min.js";
+import { tick } from '@angular/core/testing';
 
 @Component({
   selector: 'app-root',
@@ -54,6 +55,9 @@ export class AppComponent {
   selectLot(parkingZone) {
     this.selectedLot = parkingZone;
     this.displayLotInfo(this.selectedLot);
+
+    this.map.panTo(this.selectedLot.getCenter());
+    this.map.setZoom(16);
   }
 
   displayLotInfo(parkingZone) {

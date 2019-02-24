@@ -46,10 +46,11 @@ def onCarExited():
 def onConnect():
     print('Client connected to server')
 
-    emit('carCountChanged', {
+    for lot in parkingLots:
+         emit('carCountChanged', {
         'data': {
-            'lot': 'Lot Q',
-            'count': 100
+            'lot': lot,
+            'count': parkingLots[lot]
         }
     }, namespace='/cars')
 

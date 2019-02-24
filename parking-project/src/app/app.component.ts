@@ -1,9 +1,11 @@
 /// <reference types="@types/googlemaps" />
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ParkingZone } from "./parking/ParkingZone"
+import { ParkingZone } from "./parking/ParkingZone";
+import * as $ from 'jquery';
 
 declare var io: any;
-import "../../socketio.min.js"
+import "../../socketio.min.js";
+import { tick } from '@angular/core/testing';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +18,7 @@ export class AppComponent {
 
   private parkingZones: Map<string, ParkingZone>
   private carSocket;
+  private selectedLot: ParkingZone;
 
   ngOnInit() {
     var mapProp = {
@@ -38,12 +41,30 @@ export class AppComponent {
 
     this.carSocket.on('carCountChanged', (event) => {
       this.parkingZones[event.data.lot].onCarCountChanged(event.data.count);
-       console.log("Car count changed " + event.data + " "
+      console.log("Car count changed " + event.data + " "
                  + this.parkingZones[event.data.lot].getCurrentCapacity() 
                  + " / " 
                  + this.parkingZones[event.data.lot].getMaximumCapacity());
+
+      if(this.selectedLot != null) {
+        this.displayLotInfo(this.selectedLot);
+      }
     });
   } 
+
+  selectLot(parkingZone) {
+    this.selectedLot = parkingZone;
+    this.displayLotInfo(this.selectedLot);
+
+    this.map.panTo(this.selectedLot.getCenter());
+    this.map.setZoom(16);
+  }
+
+  displayLotInfo(parkingZone) {
+    $("#lotName").html(parkingZone.getName());
+    $("#spotsRemaining").html(parkingZone.getSpotsLeft() + " Parking Spots Remaining");
+    $("#percentFull").html(parkingZone.getPercentFull().toFixed() + "% Full");
+  }
 
   createParkingZones() {
     this.parkingZones = new Map<string, ParkingZone>();
@@ -54,6 +75,9 @@ export class AppComponent {
       {lat: 39.748775283184, lng: -105.22432219304648},
       {lat: 39.74898356821566, lng: -105.22391986169424}
     ]);
+    this.parkingZones["Lot D"].addClickListener((event) => {
+      this.selectLot(this.parkingZones["Lot D"]);
+    });
     
     this.parkingZones["Lot Q"] = new ParkingZone(this.map, "Lot Q", 120, [
       {lat: 39.75027459728276, lng: -105.22575904541935},
@@ -64,6 +88,9 @@ export class AppComponent {
       {lat: 39.751190201903334, lng: -105.22742201500859},
       {lat: 39.75106647226035, lng: -105.2267943780991}
     ]);
+    this.parkingZones["Lot Q"].addClickListener((event) => {
+      this.selectLot(this.parkingZones["Lot Q"]);
+    });
 
     this.parkingZones["CTLM"] = new ParkingZone(this.map, "CTLM", 160, [
       {lat: 39.7501214009411, lng: -105.21948697794733},
@@ -73,5 +100,8 @@ export class AppComponent {
       {lat: 39.7502410079071, lng: -105.2175021432763}, 
       {lat: 39.74950686532418, lng: -105.21893980730829}
     ]);
+    this.parkingZones["CTLM"].addClickListener((event) => {
+      this.selectLot(this.parkingZones["CTLM"]);
+    });
   }
 }

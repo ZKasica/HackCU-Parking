@@ -21,6 +21,7 @@ export class AppComponent {
   private selectedLot: ParkingZone;
 
   private isShowingParkingList = false;
+  private isShowingMoreInfo = false;
 
   ngOnInit() {
     var mapProp = {
@@ -37,12 +38,10 @@ export class AppComponent {
 
     this.createParkingZones();
 
-    this.createGeolocation();
     this.createUI();
     this.populateList();
 
-    // Doesn't work on android because localhost...
-    // TODO: Change to your computer IP...
+    // TODO: Change to your computer IP
     this.carSocket = io.connect('http://10.203.155.149:5000/cars');
     this.carSocket.on('connect', () => {
       console.log("Connected to cars socket");
@@ -74,8 +73,12 @@ export class AppComponent {
     this.map.panTo(this.selectedLot.getCenter());
     this.map.setZoom(16);
 
-    $('#info-panel').removeClass('slideDown');
-    $('#info-panel').addClass('slideUp', 500, 'easeOutCirc');
+
+    $('#info-panel').animate({
+      bottom: "-340px"
+    }, 300, () => {
+      $('#info-panel').removeClass('slideDown');
+    });
   }
 
   displayLotInfo(parkingZone) {
@@ -197,27 +200,73 @@ export class AppComponent {
 
   createUI() {
     $("#closeIconDiv").click(() => {
-      $('#info-panel').removeClass('slideUp');
-      $('#info-panel').addClass('slideDown', 500, 'easeOutCirc');
+      this.isShowingMoreInfo = false;
+
+      $('#info-panel').animate({
+        bottom: "-500px"
+      }, 300, () => {
+        $('#info-panel').removeClass('slideUp');
+        $('#info-panel').removeClass('fullShow');
+      });
+
       this.selectedLot = null;
+      $("#moreInfoButtonText").html("More Information");
     });
 
     $("#parkingIcon").click(() => {
       if(this.selectedLot != null) {
         this.selectedLot = null;
-        $('#info-panel').removeClass('slideUp');
-        $('#info-panel').addClass('slideDown', 500, 'easeOutCirc');
+
+        $('#info-panel').animate({
+          bottom: "-500px"
+        }, 300, () => {
+          $('#info-panel').removeClass('slideUp');
+          $('#info-panel').removeClass('fullUp');
+        });
+
+        this.isShowingMoreInfo = false;
+        $("#moreInfoButtonText").html("More Information");
       }
 
       if(this.isShowingParkingList) {
         this.isShowingParkingList = false;
-        $('#parkingLotsListDiv').removeClass('showList');
-        $('#parkingLotsListDiv').addClass('hideList', 500, 'easeOutCirc');
+        $('#parkingLotsListDiv').animate({
+          bottom: "-480px"
+        }, 300, () => {
+          $('#parkingLotsListDiv').removeClass('showList');
+        });
+
       } else {
         this.isShowingParkingList = true;
-        $('#parkingLotsListDiv').removeClass('hideList');
-        $('#parkingLotsListDiv').addClass('showList', 500, 'easeOutCirc');
+        $('#parkingLotsListDiv').animate({
+          bottom: "-0px"
+        }, 300, () => {
+          $('#parkingLotsListDiv').removeClass('hideList');
+        });
       }
+    });
+
+    $("#moreInfoButton").click(() => {
+      if(this.isShowingMoreInfo) {
+        this.isShowingMoreInfo = false;
+        $('#info-panel').animate({
+          bottom: "-340px"
+        }, 300, () => {
+          // $('#info-panel').removeClass('fullShow');
+        });
+
+        $("#moreInfoButtonText").html("More Information");
+      } else {
+        this.isShowingMoreInfo = true;
+        $('#info-panel').animate({
+          bottom: "0px"
+        }, 300, () => {
+        
+        });
+
+        $("#moreInfoButtonText").html("Hide Information");
+      }
+    
     });
   }
 
@@ -227,7 +276,7 @@ export class AppComponent {
       
       this.isShowingParkingList = false;
       $('#parkingLotsListDiv').removeClass('showList');
-      $('#parkingLotsListDiv').addClass('hideList', 500, 'easeOutCirc');
+      $('#parkingLotsListDiv').addClass('hideList', 400);
 
       this.selectLot(this.parkingZones.get(lotName));
     });
@@ -246,23 +295,5 @@ export class AppComponent {
       );
     });
     this.registerLotListEvents();
-  }
-
-  createGeolocation() {
-    // if(navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(function(position) {
-    //     var pos = {
-    //       lat: position.coords.latitude,
-    //       lng: position.coords.longitude
-    //     };
-
-    //     var infoWindow = new google.maps.InfoWindow();
-    //     infoWindow.setPosition(pos);
-    //     infoWindow.setContent('Location found.');
-    //     infoWindow.open(this.map);
-
-    //     alert(pos);
-    //   });
-    // } 
   }
 }
